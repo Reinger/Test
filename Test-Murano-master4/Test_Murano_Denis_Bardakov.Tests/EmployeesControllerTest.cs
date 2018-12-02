@@ -8,7 +8,7 @@ using Test_Murano_Denis_Bardakov.Models;
 
 namespace Test_Murano_Denis_Bardakov.Tests
 {
-    [TestClass]
+    /*[TestClass]
     public class EmployeesControllerTest
     {
 
@@ -125,5 +125,5 @@ namespace Test_Murano_Denis_Bardakov.Tests
             //Assert.
             Assert.AreEqual(count, 1);
         }
-    }
+    }*/
 }

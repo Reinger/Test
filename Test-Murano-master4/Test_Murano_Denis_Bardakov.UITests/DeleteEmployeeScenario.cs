@@ -18,14 +18,16 @@ namespace Test_Murano_Denis_Bardakov.UITests
     public class DeleteEmployeeScenario : SeleniumTest
     {
         public DeleteEmployeeScenario() : base("Test_Murano_Denis_Bardakov") { }
-        string base_url = "http://localhost:4688/";
         SqlConnection conn;
 
         [TestInitialize]
         public void InitializeSqlConnection()
         {
-            conn = new SqlConnection() { ConnectionString = ConfigurationManager.
-                ConnectionStrings["EmployeesContextTest"].ConnectionString };
+            conn = new SqlConnection()
+            {
+                ConnectionString = ConfigurationManager.
+                ConnectionStrings["EmployeesContextTest"].ConnectionString
+            };
             conn.Open();
         }
 
@@ -52,21 +54,6 @@ namespace Test_Murano_Denis_Bardakov.UITests
             }
         }
 
-        public void InitializeDatabase()
-        {
-            using (SqlCommand cmd = new SqlCommand { Connection = conn })
-            {
-                cmd.CommandText = @"
-                TRUNCATE TABLE [dbo].[list_employees];
-                INSERT INTO [dbo].[list_employees] (FullName, Position, Status, Salary)
-                VALUES (N'Сидоров Николай Петрович', N'Менеджер', N'активен', 25000),
-                        (N'Кларов Арсений Евгеньевич', N'Бухгалтер', N'не активен', 15000),
-                        (N'Палкина Тамара Петровна', N'Программист', N'активен', 30000);
-                ";
-                cmd.ExecuteNonQuery();
-            }
-        }
-
         public void InitializeDatabase(string[][] employees)
         {
             var values = "";
@@ -89,26 +76,12 @@ namespace Test_Murano_Denis_Bardakov.UITests
             }
         }
 
-
         [TestMethod]
         [TestCategory("System.Interface")]
-        public void CheckConnection()
+        [DynamicData(nameof(Data), DynamicDataSourceType.Property)]
+        public void CancelDeleteLastEmployee(string[][] employees)
         {
-            // Arrange
-            var client = new WebClient();
-            // Act
-            var url = GetAbsoluteUrl();
-            Assert.IsNotNull(url);
-            var result = client.DownloadString(url);
-            // Assert
-            Assert.IsNotNull(result);
-        }
-
-        [TestMethod]
-        [TestCategory("System.Interface")]
-        public void CancelDeleteLastEmployee()
-        {
-            InitializeDatabase();
+            InitializeDatabase(employees);
             ChromeDriver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(3);
             ChromeDriver.Manage().Window.Maximize();
             ChromeDriver.Navigate().GoToUrl(GetAbsoluteUrl());
@@ -184,12 +157,12 @@ namespace Test_Murano_Denis_Bardakov.UITests
             // Click delete.
             ChromeDriver.FindElement(By.CssSelector(".btn-default")).Click();
             // Check database.
-                using (SqlCommand cmd = new SqlCommand { Connection = conn })
-                {
-                    cmd.CommandText = $"SELECT COUNT(Id) FROM [dbo].[list_employees] WHERE Id={id}";
-                    int count = Convert.ToInt32(cmd.ExecuteScalar());
-                    Assert.AreEqual(count, 0);
-                }
+            using (SqlCommand cmd = new SqlCommand { Connection = conn })
+            {
+                cmd.CommandText = $"SELECT COUNT(Id) FROM [dbo].[list_employees] WHERE Id={id}";
+                int count = Convert.ToInt32(cmd.ExecuteScalar());
+                Assert.AreEqual(count, 0);
+            }
             ChromeDriver.Dispose();
         }
     }

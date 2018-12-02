@@ -64,6 +64,11 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DataRequestEmployeeScenario.cs" />
+    <Compile Include="EditEmployeeScenario.cs" />
+    <Compile Include="ReportGenerationScenario.cs" />
+    <Compile Include="FilterEmployeeScenario.cs" />
+    <Compile Include="NewEmployeeScenario.cs" />
     <Compile Include="SeleniumTest.cs" />
     <Compile Include="DeleteEmployeeScenario.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
